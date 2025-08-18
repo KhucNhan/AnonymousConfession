@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,6 +51,7 @@ public class PostService {
                 .tags(tags)
                 .content(request.getContent())
                 .ipAddress(ipAddress)
+                .title(request.getTitle())
                 .editToken(token)
                 .likeCount(0)
                 .dislikeCount(0)
@@ -86,6 +88,7 @@ public class PostService {
         post.setCategory(category);
         post.setTags(tags);
         post.setContent(request.getContent());
+        post.setTitle(request.getTitle());
         post.setUpdatedAt(LocalDateTime.now());
         postRepository.save(post);
 
@@ -110,10 +113,44 @@ public class PostService {
                 .categoryName(post.getCategory().getName())
                 .tags(post.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
                 .content(post.getContent())
+                .title(post.getTitle())
                 .likeCount(post.getLikeCount())
                 .dislikeCount(post.getDislikeCount())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
+    }
+
+    public List<PostDTO> searchByKeyword(String keyword) {
+        return postRepository.searchByTitleOrContent(keyword)
+                .stream().map(this::mapToDTO).toList();
+    }
+
+    public List<PostDTO> searchByCategory(Long categoryId) {
+        return postRepository.findByCategory(categoryId)
+                .stream().map(this::mapToDTO).toList();
+    }
+
+    public List<PostDTO> searchByTagId(long tagId) {
+        return postRepository.findByTag(tagId)
+                .stream().map(this::mapToDTO).toList();
+    }
+
+    public List<PostDTO> searchByTagNames(List<String> tagNames) {
+        if (tagNames == null || tagNames.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Post> posts;
+
+        if (tagNames.size() == 1) {
+            posts = postRepository.findByAnyTagNames(tagNames.get(0));
+        } else {
+            posts = postRepository.findByAllTagNames(tagNames, tagNames.size());
+        }
+
+        return posts.stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 }

@@ -9,6 +9,7 @@ public class UpdatePostRequest {
     private Long categoryId;
     private List<Long> tagIds;
     private String content;
+    private String title;
     private String editToken; // Người đăng giữ token này
 }
 
