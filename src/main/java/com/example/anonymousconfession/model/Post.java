@@ -31,6 +31,8 @@ public class Post {
     )
     private List<Tag> tags;
 
+    private String title;
+
     @Column(columnDefinition = "TEXT")
     private String content;
 

@@ -16,6 +16,7 @@ public class PostDTO {
     private String categoryName; // để client dễ hiển thị
     private List<String> tags;   // chỉ trả về tên tag, không trả entity
     private String content;
+    private String title;
     private int likeCount;
     private int dislikeCount;
     private LocalDateTime createdAt;

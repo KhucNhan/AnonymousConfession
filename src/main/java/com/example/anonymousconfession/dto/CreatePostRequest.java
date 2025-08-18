@@ -9,4 +9,5 @@ public class CreatePostRequest {
     private Long categoryId;
     private List<Long> tagIds;
     private String content;
+    private String title;
 }
